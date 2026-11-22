@@ -1,0 +1,18 @@
+# Python 虚拟环境
+.venv/
+venv/
+
+# Python 缓存
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# macOS
+.DS_Store
+
+# 编辑器本地配置
+.vscode/
+
+# 私密配置
+.env
+.env.*

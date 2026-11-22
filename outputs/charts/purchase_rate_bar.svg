@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="296" viewBox="0 0 900 296">
+<rect width="100%" height="100%" fill="white"/>
+<text x="36" y="48" font-family="Arial,sans-serif" font-size="25" font-weight="bold">不同访客类型的购买率</text>
+<line x1="225.0" y1="78" x2="225.0" y2="268" stroke="#e5e7eb"/>
+<text x="225.0" y="288" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#555">0%</text>
+<line x1="287.5" y1="78" x2="287.5" y2="268" stroke="#e5e7eb"/>
+<text x="287.5" y="288" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#555">5%</text>
+<line x1="350.0" y1="78" x2="350.0" y2="268" stroke="#e5e7eb"/>
+<text x="350.0" y="288" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#555">10%</text>
+<line x1="412.5" y1="78" x2="412.5" y2="268" stroke="#e5e7eb"/>
+<text x="412.5" y="288" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#555">15%</text>
+<line x1="475.0" y1="78" x2="475.0" y2="268" stroke="#e5e7eb"/>
+<text x="475.0" y="288" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#555">20%</text>
+<line x1="537.5" y1="78" x2="537.5" y2="268" stroke="#e5e7eb"/>
+<text x="537.5" y="288" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#555">25%</text>
+<line x1="600.0" y1="78" x2="600.0" y2="268" stroke="#e5e7eb"/>
+<text x="600.0" y="288" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#555">30%</text>
+<text x="36" y="120" font-family="Arial,sans-serif" font-size="16">新访客</text>
+<rect x="225" y="95" width="311.375" height="36" rx="5" fill="#3273dc"/>
+<text x="546.375" y="119" font-family="Arial,sans-serif" font-size="15">24.91%  422/1,694 次购买/访问</text>
+<text x="36" y="198" font-family="Arial,sans-serif" font-size="16">回访者</text>
+<rect x="225" y="173" width="174.125" height="36" rx="5" fill="#ee8c36"/>
+<text x="409.125" y="197" font-family="Arial,sans-serif" font-size="15">13.93%  1,470/10,551 次购买/访问</text>
+</svg>
