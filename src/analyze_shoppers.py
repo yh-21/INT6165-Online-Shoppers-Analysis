@@ -1,5 +1,6 @@
 from pathlib import Path
-import csv
+from math import erfc, sqrt
+from statistics import NormalDist
 import html
 import pandas as pd
 
@@ -62,7 +63,131 @@ def main():
     print(f'Shape: {df.shape}; missing: {int(df.isna().sum().sum())}; duplicates: {int(df.duplicated().sum())}')
     print(f'Purchase rate difference (New_Visitor - Returning_Visitor): {diff:.2f} percentage points')
     print(f'Tables: {TABLES}')
-    print(f'Charts (SVG source and PNG exports): {CHARTS}')
+    print(f'Charts (SVG; earlier PNG files retained): {CHARTS}')
+
+
+
+# Stage 2: confidence intervals, test, and product-page groups.
+Z = NormalDist().inv_cdf(0.975)
+GROUPS = ['New_Visitor', 'Returning_Visitor']
+
+def wilson(x, n):
+    p = x / n
+    den = 1 + Z*Z/n
+    mid = (p + Z*Z/(2*n))/den
+    half = Z*sqrt(p*(1-p)/n + Z*Z/(4*n*n))/den
+    return mid-half, mid+half
+
+def newcombe(a, b):
+    x1,n1 = a
+    x2,n2 = b
+    p1,p2 = x1/n1,x2/n2
+    l1,u1 = wilson(x1,n1)
+    l2,u2 = wilson(x2,n2)
+    d = p1-p2
+    return d-sqrt((p1-l1)**2+(u2-p2)**2), d+sqrt((u1-p1)**2+(p2-l2)**2)
+
+def summarize(df):
+    s = df.groupby('VisitorType', sort=False)['Revenue'].agg(sessions='size', purchases='sum')
+    return {g:(int(s.loc[g,'purchases']),int(s.loc[g,'sessions'])) for g in GROUPS}
+
+def write_csv(name, rows):
+    pd.DataFrame(rows).to_csv(TABLES/name,index=False,encoding='utf-8-sig')
+
+def chart(name, title, items, x_max=40, zero=False):
+    """Simple SVG dot and interval plot; values are in percentage points."""
+    left,right=230,780
+    h=130+len(items)*65
+    parts=[f'<svg xmlns="http://www.w3.org/2000/svg" width="900" height="{h}" viewBox="0 0 900 {h}">',
+           '<rect width="100%" height="100%" fill="white"/>',
+           f'<text x="35" y="38" font-size="23" font-family="Arial" font-weight="bold">{html.escape(title)}</text>']
+    if zero:
+        parts.append(f'<line x1="{left}" x2="{left}" y1="55" y2="{h-45}" stroke="#b91c1c" stroke-dasharray="5 4"/>')
+    for tick in range(0,x_max+1,5):
+        x=left+(right-left)*tick/x_max
+        parts.append(f'<line x1="{x}" x2="{x}" y1="60" y2="{h-45}" stroke="#e5e7eb"/>')
+        parts.append(f'<text x="{x}" y="{h-18}" text-anchor="middle" font-size="13" font-family="Arial">{tick}%</text>')
+    for i,(label,val,lo,hi,note) in enumerate(items):
+        y=85+i*65
+        x=lambda v:left+(right-left)*v/x_max
+        parts += [f'<text x="35" y="{y+5}" font-size="16" font-family="Arial">{html.escape(label)}</text>',
+                  f'<line x1="{x(lo)}" x2="{x(hi)}" y1="{y}" y2="{y}" stroke="#2563eb" stroke-width="4"/>',
+                  f'<circle cx="{x(val)}" cy="{y}" r="7" fill="#ea580c"/>',
+                  f'<text x="{right+15}" y="{y+5}" font-size="14" font-family="Arial">{val:.2f}% {html.escape(note)}</text>']
+    parts.append('</svg>')
+    (CHARTS/name).write_text('\n'.join(parts),encoding='utf-8')
+
+def stage2_main():
+    df = pd.read_csv(INPUT)
+    assert df.shape == (12330,18)
+    assert df.isna().sum().sum() == 0
+    assert set(df.VisitorType.unique()) == set(GROUPS+['Other'])
+    assert set(df.Revenue.unique()) == {False,True}
+    assert (df.ProductRelated >= 0).all() and (df.ProductRelated%1 == 0).all()
+    counts = summarize(df)
+    a,b = counts[GROUPS[0]],counts[GROUPS[1]]
+    p1,p2 = a[0]/a[1],b[0]/b[1]
+    diff = p1-p2
+    dl,du = newcombe(a,b)
+    rows=[]
+    for g in GROUPS:
+        x,n = counts[g]
+        lo,hi = wilson(x,n)
+        rows.append(dict(group=g,sessions=n,purchases=x,rate=x/n,ci95_low=lo,ci95_high=hi))
+    write_csv('stage2_confidence_intervals.csv',rows)
+    chart('stage2_purchase_rate_ci.svg','Purchase rate and 95% CI',[
+        ('New visitors',p1*100,rows[0]['ci95_low']*100,rows[0]['ci95_high']*100,f'n={a[1]}'),
+        ('Returning visitors',p2*100,rows[1]['ci95_low']*100,rows[1]['ci95_high']*100,f'n={b[1]}')])
+    pooled=(a[0]+b[0])/(a[1]+b[1])
+    se=sqrt(pooled*(1-pooled)*(1/a[1]+1/b[1]))
+    z=diff/se
+    pval=erfc(abs(z)/sqrt(2))
+    write_csv('stage2_test.csv',[dict(test='two-sided pooled two-proportion z',difference=diff,
+        ci95_low=dl,ci95_high=du,pooled_rate=pooled,standard_error=se,z=z,p_value=pval,
+        reject_at_005=pval<0.05)])
+    chart('stage2_difference_ci.svg','Purchase rate difference and 95% CI',[
+        ('New - Returning',diff*100,dl*100,du*100,'percentage points')],x_max=20,zero=True)
+    chosen=df[df.VisitorType.isin(GROUPS)].copy()
+    q=chosen.ProductRelated.quantile([.25,.5,.75]).astype(int).tolist()
+    assert len(set(q))==3
+    edges=[-1]+q+[float('inf')]
+    labels=[f'0-{q[0]}',f'{q[0]+1}-{q[1]}',f'{q[1]+1}-{q[2]}',f'{q[2]+1}+']
+    chosen['product_group']=pd.cut(chosen.ProductRelated,bins=edges,labels=labels)
+    tab=chosen.groupby(['product_group','VisitorType'],observed=True)['Revenue'].agg(sessions='size',purchases='sum').reset_index()
+    tab['rate']=tab.purchases/tab.sessions
+    tab.to_csv(TABLES/'stage2_productrelated_groups.csv',index=False,encoding='utf-8-sig')
+    chart('stage2_productrelated.svg','Purchase rates by product pages',[
+        (f'{label} / {group}',float(tab[(tab.product_group==label)&(tab.VisitorType==group)].rate.iloc[0])*100,
+         float(tab[(tab.product_group==label)&(tab.VisitorType==group)].rate.iloc[0])*100,
+         float(tab[(tab.product_group==label)&(tab.VisitorType==group)].rate.iloc[0])*100,'')
+        for label in labels for group in GROUPS],x_max=40)
+    wide=tab.pivot(index='product_group',columns='VisitorType',values=['sessions','purchases','rate']).reindex(labels)
+    weights=chosen.product_group.value_counts().reindex(labels)/len(chosen)
+    standardized={g:float((wide['rate'][g]*weights).sum()) for g in GROUPS}
+    write_csv('stage2_standardized.csv',[dict(group=g,raw_rate=counts[g][0]/counts[g][1],
+        standardized_rate=standardized[g]) for g in GROUPS])
+    chart('stage2_raw_vs_standardized.svg','Raw and standardized differences',[
+        ('Raw',diff*100,diff*100,diff*100,'percentage points'),
+        ('Standardized',(standardized[GROUPS[0]]-standardized[GROUPS[1]])*100,
+         (standardized[GROUPS[0]]-standardized[GROUPS[1]])*100,
+         (standardized[GROUPS[0]]-standardized[GROUPS[1]])*100,'percentage points')],x_max=20)
+    write_csv('stage2_group_weights.csv',[dict(product_group=k,weight=float(v)) for k,v in weights.items()])
+    de=df.drop_duplicates()
+    dc=summarize(de)
+    write_csv('stage2_duplicate_sensitivity.csv',[dict(dataset=tag,group=g,sessions=c[g][1],purchases=c[g][0],rate=c[g][0]/c[g][1])
+        for tag,c in [('all',counts),('deduplicated_sensitivity_only',dc)] for g in GROUPS])
+    print('Data:',len(df),'rows;',df.duplicated().sum(),'identical rows (kept in main analysis)')
+    print('Counts:',counts,'Rates:',p1,p2,'Difference:',diff)
+    print('Wilson intervals:',[(r['group'],r['ci95_low'],r['ci95_high']) for r in rows])
+    print('Newcombe difference CI:',dl,du)
+    print('Z:',z,'P:',pval)
+    print('ProductRelated common quartile boundaries:',q)
+    print(tab.to_string(index=False))
+    print('Standardized rates:',standardized,'Difference:',standardized[GROUPS[0]]-standardized[GROUPS[1]])
+    print('Deduplicated sensitivity:',dc)
+
+
 
 if __name__ == '__main__':
     main()
+    stage2_main()

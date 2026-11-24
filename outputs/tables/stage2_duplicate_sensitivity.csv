@@ -1,0 +1,5 @@
+﻿dataset,group,sessions,purchases,rate
+all,New_Visitor,1694,422,0.24911452184179456
+all,Returning_Visitor,10551,1470,0.1393232868922377
+deduplicated_sensitivity_only,New_Visitor,1693,422,0.2492616656822209
+deduplicated_sensitivity_only,Returning_Visitor,10431,1470,0.14092608570606846
