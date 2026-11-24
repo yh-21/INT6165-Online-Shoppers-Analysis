@@ -135,9 +135,9 @@ def stage2_main():
         lo,hi = wilson(x,n)
         rows.append(dict(group=g,sessions=n,purchases=x,rate=x/n,ci95_low=lo,ci95_high=hi))
     write_csv('stage2_confidence_intervals.csv',rows)
-    chart('stage2_purchase_rate_ci.svg','Purchase rate and 95% CI',[
-        ('New visitors',p1*100,rows[0]['ci95_low']*100,rows[0]['ci95_high']*100,f'n={a[1]}'),
-        ('Returning visitors',p2*100,rows[1]['ci95_low']*100,rows[1]['ci95_high']*100,f'n={b[1]}')])
+    chart('stage2_purchase_rate_ci.svg','新访客与回访者购买率及95%置信区间',[
+        ('新访客',p1*100,rows[0]['ci95_low']*100,rows[0]['ci95_high']*100,f'访问会话数={a[1]}'),
+        ('回访者',p2*100,rows[1]['ci95_low']*100,rows[1]['ci95_high']*100,f'访问会话数={b[1]}')])
     pooled=(a[0]+b[0])/(a[1]+b[1])
     se=sqrt(pooled*(1-pooled)*(1/a[1]+1/b[1]))
     z=diff/se
@@ -145,8 +145,8 @@ def stage2_main():
     write_csv('stage2_test.csv',[dict(test='two-sided pooled two-proportion z',difference=diff,
         ci95_low=dl,ci95_high=du,pooled_rate=pooled,standard_error=se,z=z,p_value=pval,
         reject_at_005=pval<0.05)])
-    chart('stage2_difference_ci.svg','Purchase rate difference and 95% CI',[
-        ('New - Returning',diff*100,dl*100,du*100,'percentage points')],x_max=20,zero=True)
+    chart('stage2_difference_ci.svg','新访客与回访者购买率差值及95%置信区间',[
+        ('新访客 − 回访者',diff*100,dl*100,du*100,'个百分点')],x_max=20,zero=True)
     chosen=df[df.VisitorType.isin(GROUPS)].copy()
     q=chosen.ProductRelated.quantile([.25,.5,.75]).astype(int).tolist()
     assert len(set(q))==3
@@ -156,8 +156,8 @@ def stage2_main():
     tab=chosen.groupby(['product_group','VisitorType'],observed=True)['Revenue'].agg(sessions='size',purchases='sum').reset_index()
     tab['rate']=tab.purchases/tab.sessions
     tab.to_csv(TABLES/'stage2_productrelated_groups.csv',index=False,encoding='utf-8-sig')
-    chart('stage2_productrelated.svg','Purchase rates by product pages',[
-        (f'{label} / {group}',float(tab[(tab.product_group==label)&(tab.VisitorType==group)].rate.iloc[0])*100,
+    chart('stage2_productrelated.svg','不同产品相关页面浏览量下的购买率',[
+        (f'{label}页 / {"新访客" if group == GROUPS[0] else "回访者"}',float(tab[(tab.product_group==label)&(tab.VisitorType==group)].rate.iloc[0])*100,
          float(tab[(tab.product_group==label)&(tab.VisitorType==group)].rate.iloc[0])*100,
          float(tab[(tab.product_group==label)&(tab.VisitorType==group)].rate.iloc[0])*100,'')
         for label in labels for group in GROUPS],x_max=40)
@@ -166,11 +166,11 @@ def stage2_main():
     standardized={g:float((wide['rate'][g]*weights).sum()) for g in GROUPS}
     write_csv('stage2_standardized.csv',[dict(group=g,raw_rate=counts[g][0]/counts[g][1],
         standardized_rate=standardized[g]) for g in GROUPS])
-    chart('stage2_raw_vs_standardized.svg','Raw and standardized differences',[
-        ('Raw',diff*100,diff*100,diff*100,'percentage points'),
-        ('Standardized',(standardized[GROUPS[0]]-standardized[GROUPS[1]])*100,
+    chart('stage2_raw_vs_standardized.svg','原始差值与标准化差值比较',[
+        ('原始购买率差值',diff*100,diff*100,diff*100,'个百分点'),
+        ('标准化购买率差值',(standardized[GROUPS[0]]-standardized[GROUPS[1]])*100,
          (standardized[GROUPS[0]]-standardized[GROUPS[1]])*100,
-         (standardized[GROUPS[0]]-standardized[GROUPS[1]])*100,'percentage points')],x_max=20)
+         (standardized[GROUPS[0]]-standardized[GROUPS[1]])*100,'个百分点')],x_max=20)
     write_csv('stage2_group_weights.csv',[dict(product_group=k,weight=float(v)) for k,v in weights.items()])
     de=df.drop_duplicates()
     dc=summarize(de)

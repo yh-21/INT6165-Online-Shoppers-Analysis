@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="260" viewBox="0 0 900 260">
 <rect width="100%" height="100%" fill="white"/>
-<text x="35" y="38" font-size="23" font-family="Arial" font-weight="bold">Raw and standardized differences</text>
+<text x="35" y="38" font-size="23" font-family="Arial" font-weight="bold">原始差值与标准化差值比较</text>
 <line x1="230.0" x2="230.0" y1="60" y2="215" stroke="#e5e7eb"/>
 <text x="230.0" y="242" text-anchor="middle" font-size="13" font-family="Arial">0%</text>
 <line x1="367.5" x2="367.5" y1="60" y2="215" stroke="#e5e7eb"/>
@@ -11,12 +11,12 @@
 <text x="642.5" y="242" text-anchor="middle" font-size="13" font-family="Arial">15%</text>
 <line x1="780.0" x2="780.0" y1="60" y2="215" stroke="#e5e7eb"/>
 <text x="780.0" y="242" text-anchor="middle" font-size="13" font-family="Arial">20%</text>
-<text x="35" y="90" font-size="16" font-family="Arial">Raw</text>
+<text x="35" y="90" font-size="16" font-family="Arial">原始购买率差值</text>
 <line x1="531.9258961112814" x2="531.9258961112814" y1="85" y2="85" stroke="#2563eb" stroke-width="4"/>
 <circle cx="531.9258961112814" cy="85" r="7" fill="#ea580c"/>
-<text x="795" y="90" font-size="14" font-family="Arial">10.98% percentage points</text>
-<text x="35" y="155" font-size="16" font-family="Arial">Standardized</text>
+<text x="795" y="90" font-size="14" font-family="Arial">10.98% 个百分点</text>
+<text x="35" y="155" font-size="16" font-family="Arial">标准化购买率差值</text>
 <line x1="582.1117388082968" x2="582.1117388082968" y1="150" y2="150" stroke="#2563eb" stroke-width="4"/>
 <circle cx="582.1117388082968" cy="150" r="7" fill="#ea580c"/>
-<text x="795" y="155" font-size="14" font-family="Arial">12.80% percentage points</text>
+<text x="795" y="155" font-size="14" font-family="Arial">12.80% 个百分点</text>
 </svg>
