@@ -1,54 +1,56 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650" viewBox="0 0 900 650">
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="650" viewBox="0 0 1120 650">
 <rect width="100%" height="100%" fill="white"/>
-<text x="35" y="38" font-size="23" font-family="Arial" font-weight="bold">不同产品相关页面浏览量下的购买率</text>
+<text x="35" y="38" font-size="23" font-family="Arial" font-weight="bold">不同产品相关页面浏览量下的购买率（Wilson 95%区间）</text>
 <line x1="230.0" x2="230.0" y1="60" y2="605" stroke="#e5e7eb"/>
 <text x="230.0" y="632" text-anchor="middle" font-size="13" font-family="Arial">0%</text>
-<line x1="298.75" x2="298.75" y1="60" y2="605" stroke="#e5e7eb"/>
-<text x="298.75" y="632" text-anchor="middle" font-size="13" font-family="Arial">5%</text>
-<line x1="367.5" x2="367.5" y1="60" y2="605" stroke="#e5e7eb"/>
-<text x="367.5" y="632" text-anchor="middle" font-size="13" font-family="Arial">10%</text>
-<line x1="436.25" x2="436.25" y1="60" y2="605" stroke="#e5e7eb"/>
-<text x="436.25" y="632" text-anchor="middle" font-size="13" font-family="Arial">15%</text>
-<line x1="505.0" x2="505.0" y1="60" y2="605" stroke="#e5e7eb"/>
-<text x="505.0" y="632" text-anchor="middle" font-size="13" font-family="Arial">20%</text>
-<line x1="573.75" x2="573.75" y1="60" y2="605" stroke="#e5e7eb"/>
-<text x="573.75" y="632" text-anchor="middle" font-size="13" font-family="Arial">25%</text>
-<line x1="642.5" x2="642.5" y1="60" y2="605" stroke="#e5e7eb"/>
-<text x="642.5" y="632" text-anchor="middle" font-size="13" font-family="Arial">30%</text>
-<line x1="711.25" x2="711.25" y1="60" y2="605" stroke="#e5e7eb"/>
-<text x="711.25" y="632" text-anchor="middle" font-size="13" font-family="Arial">35%</text>
+<line x1="291.1111111111111" x2="291.1111111111111" y1="60" y2="605" stroke="#e5e7eb"/>
+<text x="291.1111111111111" y="632" text-anchor="middle" font-size="13" font-family="Arial">5%</text>
+<line x1="352.22222222222223" x2="352.22222222222223" y1="60" y2="605" stroke="#e5e7eb"/>
+<text x="352.22222222222223" y="632" text-anchor="middle" font-size="13" font-family="Arial">10%</text>
+<line x1="413.33333333333337" x2="413.33333333333337" y1="60" y2="605" stroke="#e5e7eb"/>
+<text x="413.33333333333337" y="632" text-anchor="middle" font-size="13" font-family="Arial">15%</text>
+<line x1="474.44444444444446" x2="474.44444444444446" y1="60" y2="605" stroke="#e5e7eb"/>
+<text x="474.44444444444446" y="632" text-anchor="middle" font-size="13" font-family="Arial">20%</text>
+<line x1="535.5555555555555" x2="535.5555555555555" y1="60" y2="605" stroke="#e5e7eb"/>
+<text x="535.5555555555555" y="632" text-anchor="middle" font-size="13" font-family="Arial">25%</text>
+<line x1="596.6666666666667" x2="596.6666666666667" y1="60" y2="605" stroke="#e5e7eb"/>
+<text x="596.6666666666667" y="632" text-anchor="middle" font-size="13" font-family="Arial">30%</text>
+<line x1="657.7777777777778" x2="657.7777777777778" y1="60" y2="605" stroke="#e5e7eb"/>
+<text x="657.7777777777778" y="632" text-anchor="middle" font-size="13" font-family="Arial">35%</text>
+<line x1="718.8888888888889" x2="718.8888888888889" y1="60" y2="605" stroke="#e5e7eb"/>
+<text x="718.8888888888889" y="632" text-anchor="middle" font-size="13" font-family="Arial">40%</text>
 <line x1="780.0" x2="780.0" y1="60" y2="605" stroke="#e5e7eb"/>
-<text x="780.0" y="632" text-anchor="middle" font-size="13" font-family="Arial">40%</text>
+<text x="780.0" y="632" text-anchor="middle" font-size="13" font-family="Arial">45%</text>
 <text x="35" y="90" font-size="16" font-family="Arial">0-7页 / 新访客</text>
-<line x1="421.1307053941909" x2="421.1307053941909" y1="85" y2="85" stroke="#2563eb" stroke-width="4"/>
-<circle cx="421.1307053941909" cy="85" r="7" fill="#ea580c"/>
-<text x="795" y="90" font-size="14" font-family="Arial">13.90% </text>
+<line x1="365.6230237537742" x2="441.14214223910733" y1="85" y2="85" stroke="#2563eb" stroke-width="4"/>
+<circle cx="399.8939603503919" cy="85" r="7" fill="#ea580c"/>
+<text x="795" y="90" font-size="14" font-family="Arial">13.90% 购买/访问=67/482</text>
 <text x="35" y="155" font-size="16" font-family="Arial">0-7页 / 回访者</text>
-<line x1="277.2328244274809" x2="277.2328244274809" y1="150" y2="150" stroke="#2563eb" stroke-width="4"/>
-<circle cx="277.2328244274809" cy="150" r="7" fill="#ea580c"/>
-<text x="795" y="155" font-size="14" font-family="Arial">3.44% </text>
+<line x1="264.259856157992" x2="281.37607873473394" y1="150" y2="150" stroke="#2563eb" stroke-width="4"/>
+<circle cx="271.9847328244275" cy="150" r="7" fill="#ea580c"/>
+<text x="795" y="155" font-size="14" font-family="Arial">3.44% 购买/访问=90/2620</text>
 <text x="35" y="220" font-size="16" font-family="Arial">8-18页 / 新访客</text>
-<line x1="571.6149068322982" x2="571.6149068322982" y1="215" y2="215" stroke="#2563eb" stroke-width="4"/>
-<circle cx="571.6149068322982" cy="215" r="7" fill="#ea580c"/>
-<text x="795" y="220" font-size="14" font-family="Arial">24.84% </text>
+<line x1="494.7711988895723" x2="576.1903597732919" y1="215" y2="215" stroke="#2563eb" stroke-width="4"/>
+<circle cx="533.6576949620428" cy="215" r="7" fill="#ea580c"/>
+<text x="795" y="220" font-size="14" font-family="Arial">24.84% 购买/访问=160/644</text>
 <text x="35" y="285" font-size="16" font-family="Arial">8-18页 / 回访者</text>
-<line x1="381.6666666666667" x2="381.6666666666667" y1="280" y2="280" stroke="#2563eb" stroke-width="4"/>
-<circle cx="381.6666666666667" cy="280" r="7" fill="#ea580c"/>
-<text x="795" y="285" font-size="14" font-family="Arial">11.03% </text>
+<line x1="350.4622514753511" x2="380.6436102078943" y1="280" y2="280" stroke="#2563eb" stroke-width="4"/>
+<circle cx="364.8148148148148" cy="280" r="7" fill="#ea580c"/>
+<text x="795" y="285" font-size="14" font-family="Arial">11.03% 购买/访问=273/2475</text>
 <text x="35" y="350" font-size="16" font-family="Arial">19-38页 / 新访客</text>
-<line x1="714.1075794621026" x2="714.1075794621026" y1="345" y2="345" stroke="#2563eb" stroke-width="4"/>
-<circle cx="714.1075794621026" cy="345" r="7" fill="#ea580c"/>
-<text x="795" y="350" font-size="14" font-family="Arial">35.21% </text>
+<line x1="605.6647384682926" x2="718.3354938613879" y1="345" y2="345" stroke="#2563eb" stroke-width="4"/>
+<circle cx="660.317848410758" cy="345" r="7" fill="#ea580c"/>
+<text x="795" y="350" font-size="14" font-family="Arial">35.21% 购买/访问=144/409</text>
 <text x="35" y="415" font-size="16" font-family="Arial">19-38页 / 回访者</text>
-<line x1="467.17825585862465" x2="467.17825585862465" y1="410" y2="410" stroke="#2563eb" stroke-width="4"/>
-<circle cx="467.17825585862465" cy="410" r="7" fill="#ea580c"/>
-<text x="795" y="415" font-size="14" font-family="Arial">17.25% </text>
+<line x1="423.6790845414513" x2="459.1508762765747" y1="410" y2="410" stroke="#2563eb" stroke-width="4"/>
+<circle cx="440.8251163187775" cy="410" r="7" fill="#ea580c"/>
+<text x="795" y="415" font-size="14" font-family="Arial">17.25% 购买/访问=449/2603</text>
 <text x="35" y="480" font-size="16" font-family="Arial">39+页 / 新访客</text>
-<line x1="671.0377358490566" x2="671.0377358490566" y1="475" y2="475" stroke="#2563eb" stroke-width="4"/>
-<circle cx="671.0377358490566" cy="475" r="7" fill="#ea580c"/>
-<text x="795" y="480" font-size="14" font-family="Arial">32.08% </text>
+<line x1="539.4268490389733" x2="714.9763940903563" y1="475" y2="475" stroke="#2563eb" stroke-width="4"/>
+<circle cx="622.0335429769392" cy="475" r="7" fill="#ea580c"/>
+<text x="795" y="480" font-size="14" font-family="Arial">32.08% 购买/访问=51/159</text>
 <text x="35" y="545" font-size="16" font-family="Arial">39+页 / 回访者</text>
-<line x1="547.1223273746932" x2="547.1223273746932" y1="540" y2="540" stroke="#2563eb" stroke-width="4"/>
-<circle cx="547.1223273746932" cy="540" r="7" fill="#ea580c"/>
-<text x="795" y="545" font-size="14" font-family="Arial">23.06% </text>
+<line x1="493.4448142648652" x2="531.2135974926962" y1="540" y2="540" stroke="#2563eb" stroke-width="4"/>
+<circle cx="511.88651322194954" cy="540" r="7" fill="#ea580c"/>
+<text x="795" y="545" font-size="14" font-family="Arial">23.06% 购买/访问=658/2853</text>
 </svg>

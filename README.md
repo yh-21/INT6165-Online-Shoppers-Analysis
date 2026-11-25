@@ -1,135 +1,174 @@
+<div align="center">
+
 # INT6165 在线购物购买率分析
 
-> 本项目比较在线购物数据中的新访客与回访者：每次访问的购买比例是否不同、相差多少，以及分组后差异是否仍在。
+### 新访客与回访者的购买行为比较
 
-数据来自 [UCI Online Shoppers Purchasing Intention Dataset](https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset)。逐步解释、公式和完整结果见 [RESULTS.md](RESULTS.md)。
+<p>
+  <img src="https://img.shields.io/badge/Course-INT6165-2f6fdb" alt="课程 INT6165">
+  <img src="https://img.shields.io/badge/Language-Python-3776AB?logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Data-UCI%20Repository-5b8c5a" alt="UCI 数据集">
+  <img src="https://img.shields.io/badge/Project-Statistical%20Analysis-7551a6" alt="统计分析项目">
+</p>
 
-| 课程项目 | 分析主题 | 主要工具 | 研究对象 |
-|---|---|---|---|
-| INT6165 | 购买率与统计比较 | Python · pandas | 新访客与回访者 |
+<p>使用公开在线购物访问数据，计算新访客与回访者的购买率，并通过区间估计、假设检验和分组分析理解观察到的差异。</p>
 
-### 快速导航
-
-[结论摘要](#先看结论) · [数据说明](#数据是什么) · [项目结构](#文件夹结构) · [运行方法](#如何运行) · [技术与限制](#技术栈)
+</div>
 
 ---
 
-## 先看结论
+## 项目速览
 
-| 指标 | 新访客 | 回访者 |
-|---|---:|---:|
-| 访问会话数 | 1,694 | 10,551 |
-| 购买会话数 | 422 | 1,470 |
-| 购买率 | **24.91%** | **13.93%** |
-| Wilson 95% 置信区间 | 22.91%–27.03% | 13.28%–14.61% |
+| 项目 | 内容 |
+|---|---|
+| 研究问题 | 新访客与回访者的访问会话购买率是否不同？ |
+| 数据集 | [UCI Online Shoppers Purchasing Intention Dataset](https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset) |
+| 数据规模 | 12,330 条访问会话、18 个字段 |
+| 主要方法 | 条件概率、Wilson 置信区间、Newcombe 差值区间、双侧两比例 Z 检验、ProductRelated 分组比较 |
+| 工具 | Python、pandas、SVG |
+| 详细结果 | [RESULTS.md](RESULTS.md) |
 
-新访客减回访者的购买率差为 **10.98 个百分点**，Newcombe 95% 区间为 **8.87–13.19 个百分点**。双侧两组比例检验得到 Z=11.6053、p=3.87×10⁻³¹，数据支持两组购买率存在统计差异。
+## 核心发现
 
-> **如何解读：**这说明这份数据中两类**访问会话的购买比例不同**，不证明访客类型导致差异。数据是观察性记录，且没有用户编号来识别独立用户。
+| 访客类型 | 访问会话数 | 购买会话数 | 购买率 |
+|---|---:|---:|---:|
+| 新访客 | 1,694 | 422 | **24.91%** |
+| 回访者 | 10,551 | 1,470 | **13.93%** |
+
+新访客的购买率高 **10.98 个百分点**。Newcombe 95% 置信区间为 **8.87–13.19 个百分点**；双侧两组比例 Z 检验为 **Z = 11.6053，p = 3.87 × 10⁻³¹**。在本数据中，两组访问会话的购买比例存在统计差异。
+
+> **解释边界：**这是观察性数据。结果说明访客类型与购买行为有关联，不能据此断言访客类型导致购买率差异。数据以访问会话为单位，也没有用户 ID 来识别独立用户。
+
+## 主要图表
+
+### 新访客与回访者购买率
 
 ![新访客与回访者购买率对比](outputs/charts/purchase_rate_bar.svg)
 
-[购买率区间图](outputs/charts/stage2_purchase_rate_ci.svg) · [差值区间图](outputs/charts/stage2_difference_ci.svg) · [页面浏览量分组图](outputs/charts/stage2_productrelated.svg)
+### 购买率及 95% 置信区间
 
----
+![新访客与回访者购买率的 Wilson 95% 置信区间](outputs/charts/stage2_purchase_rate_ci.svg)
 
-## 数据是什么？
+### 购买率差值及 95% 置信区间
 
-数据集有 12,330 条访问会话、18 个字段。一行代表一次访问，不一定是一个不同的人；一个人可能多次访问。
+![新访客减回访者的购买率差值区间](outputs/charts/stage2_difference_ci.svg)
 
-| 字段 | 白话解释 | 用途 |
-|---|---|---|
-| `VisitorType` | 新访客、回访者或 Other | 区分组别 |
-| `Revenue` | 本次是否购买；True 是，False 否 | 计算购买次数 |
-| `ProductRelated` | 本次浏览的产品相关页面数 | 延伸分组比较 |
+分组细图、标准化和贝叶斯图表见 [`outputs/charts/`](outputs/charts/)；逐步公式和结果解释见 [RESULTS.md](RESULTS.md)。
 
-**购买率 = 购买会话数 ÷ 访问会话数。**例如新访客 422/1,694=24.91%，表示每 100 次新访客访问约有 25 次购买，不是独立用户购买比例。
-
-检查发现 0 个缺失值、125 条完全相同记录。主分析保留重复记录，因为内容相同不等于确认记录错误；另做去重敏感性分析。Other 有 85 次访问、16 次购买，保留在数据中，但不纳入新访客与回访者的两组比较。
-
----
-
-## 文件夹结构
+## 分析流程
 
 ```text
-data/raw/online_shoppers_intention.csv  原始数据，程序不会修改
-src/analyze_shoppers.py                 分析和作图程序
-outputs/charts/                         SVG 图；部分早期图另有 PNG
-outputs/tables/                         CSV 结果表，可用 Excel/Numbers 打开
-README.md                               项目介绍与运行方法
-RESULTS.md                              详细步骤、公式、结果和限制
-requirements.txt                        Python 依赖清单
-MarkingStandard.pdf                     课程评分标准
+读取数据
+  → 检查字段、缺失值与重复记录
+  → 按访客类型计算访问数、购买数和购买率
+  → 估计购买率及差值的 95% 置信区间
+  → 进行双侧两比例 Z 检验
+  → 按 ProductRelated 浏览量分组并比较
+  → 输出 CSV 结果表与 SVG 图表
 ```
 
-本机的 `.venv/` 是项目专用 Python 环境，其他电脑要各自创建。图表、表格只保存在本地，不会自动出现在飞书；放进飞书或幻灯片需要上传/插入。
+购买率定义为：
 
-### 图表速查
-
-| 图表文件 | 展示内容 |
-|---|---|
-| `purchase_rate_bar.svg` | 两类访客购买率 |
-| `purchase_rate_difference.svg` | 两组购买率差（百分点） |
-| `visitor_sessions.svg` | 各类型访问次数 |
-| `stage2_purchase_rate_ci.svg` | 购买率和各自的 95% 区间 |
-| `stage2_difference_ci.svg` | 差值及其 95% 区间 |
-| `stage2_productrelated.svg` | 按产品相关页面数分组的购买率 |
-| `stage2_raw_vs_standardized.svg` | 原始差值与标准化差值 |
-
-主要结果表包括 `purchase_rate_by_visitor.csv`、`data_quality_summary.csv`、`missing_values_by_field.csv`；阶段二的置信区间、检验、分组、标准化和重复记录敏感性结果均在 `outputs/tables/`，详细说明见 [RESULTS.md](RESULTS.md)。
-
----
-
-## 如何运行？
-
-用 VS Code 打开项目文件夹，选择“终端 → 新建终端”。确认终端当前目录是项目根目录（能看到 `src`、`data`、`outputs`）。
-
-### 已有环境（Mac）
-
-```bash
-.venv/bin/python src/analyze_shoppers.py
+```text
+购买率 = 购买会话数 ÷ 该组访问会话总数
 ```
 
-### 第一次运行或重建环境（Mac）
+每行代表一次访问会话，不代表一位独立访客。数据中有 0 个缺失值和 125 条完全相同记录。主分析保留重复记录，并在结果中提供去重敏感性比较；相同记录本身不足以证明数据错误。
+
+## 项目结构
+
+```text
+INT6165-Online-Shoppers-Analysis/
+├── data/
+│   └── raw/                         # 原始数据；分析程序不会修改
+├── src/
+│   ├── analyze_shoppers.py          # 主分析：购买率、置信区间与分组比较
+│   └── analyze_supplementary.py     # 补充分析：Logistic 回归与贝叶斯模型
+├── outputs/
+│   ├── charts/                      # SVG/PNG 图表
+│   ├── tables/                      # CSV 统计结果
+│   └── reports/                     # 补充分析报告 PDF
+├── README.md                        # 项目主页与运行说明
+├── RESULTS.md                       # 详细方法、公式、结果与局限
+├── requirements.txt                 # Python 依赖
+└── MarkingStandard.pdf              # 课程评分标准
+```
+
+分组深入分析和贝叶斯补充分析由 `src/analyze_supplementary.py` 统一复现，图表与 CSV 直接写入 `outputs/`。补充分析报告 PDF 保存在 `outputs/reports/`。
+
+## 如何运行
+
+### 环境要求
+
+- Python 3
+- 项目依赖见 [`requirements.txt`](requirements.txt)
+
+在项目根目录打开终端，首次运行时创建项目专用环境并安装依赖：
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
+```
+
+运行主分析：
+
+```bash
 .venv/bin/python src/analyze_shoppers.py
 ```
 
-1. 第一行在项目中建独立 Python 环境，不影响其他项目。
-2. 第二行安装依赖清单中的套件。
-3. 第三行运行分析程序。
+程序会读取 `data/raw/online_shoppers_intention.csv`，更新 `outputs/tables/` 中的主分析 CSV 和 `outputs/charts/` 中的主分析 SVG；不会改动原始数据。已有 PNG 不会自动更新。
 
-平时不需要重复安装，直接运行第三行即可。Windows 可使用：
+### 运行补充分析
 
-```powershell
-python -m venv .venv
-.venv\Scripts\python.exe -m pip install -r requirements.txt
-.venv\Scripts\python.exe src\analyze_shoppers.py
+补充脚本读取同一份原始 CSV，生成 ProductRelated 分组区间图、Logistic 回归结果和 Beta-二项贝叶斯结果。依赖已列入 `requirements.txt`。如果已有 `.venv`，先更新依赖：
+
+```bash
+.venv/bin/python -m pip install -r requirements.txt
 ```
 
-程序读取原始 CSV，更新 `outputs/tables/` 中的 CSV 和 `outputs/charts/` 中的 SVG，不修改原始数据。已有 PNG 不会自动更新；使用 PNG 前要确认它和当前结果一致。
+然后在项目根目录运行：
 
----
+```bash
+.venv/bin/python src/analyze_supplementary.py
+```
+
+脚本会把结果直接写入 `outputs/tables/` 与 `outputs/charts/`，不修改原始数据。
+
+## 结果文件导航
+
+| 文件 | 内容 |
+|---|---|
+| `outputs/tables/purchase_rate_by_visitor.csv` | 各访客类型的访问数、购买数和购买率 |
+| `outputs/tables/stage2_confidence_intervals.csv` | 两组购买率及 Wilson 区间 |
+| `outputs/tables/stage2_test.csv` | 差值、Newcombe 区间、Z 值和 p 值 |
+| `outputs/tables/stage2_productrelated_groups.csv` | 主程序生成的浏览量分组汇总 |
+| `outputs/tables/stage2_productrelated_detail.csv` | 补充脚本生成的分组计数、Wilson 区间与稀疏提示 |
+| `outputs/tables/stage2_standardized.csv` | 原始购买率与标准化购买率 |
+| `outputs/tables/stage2_duplicate_sensitivity.csv` | 保留与去重情景的敏感性比较 |
+| `outputs/tables/stage2_logistic_coefficients.csv` | Logistic 回归系数、优势比及其区间 |
+| `outputs/tables/stage2_logistic_diagnostics.csv` | Logistic 模型收敛与拟合诊断 |
+| `outputs/tables/stage2_bayesian_posteriors.csv` | 两组购买率的后验结果 |
+| `outputs/tables/stage2_bayesian_comparisons.csv` | 两种先验下购买率差值的后验比较 |
+
+## 方法与研究限制
+
+- **条件概率：**按访客类型计算购买会话数占该类访问会话数的比例。
+- **置信区间：**Wilson 区间用于单组比例；Newcombe 方法用于两组比例差。
+- **假设检验：**双侧两比例 Z 检验，用于判断样本中的差异是否与“总体比例相同”相符。
+- **深入分析：**ProductRelated 分组比较、标准化、Logistic 回归和 Beta-二项贝叶斯分析作为补充证据，不能解释为因果效应。
+
+研究结论受数据集范围和观察性设计限制：访问会话不等同于独立用户；访客类型不是随机分配；ProductRelated 是访问过程中产生的行为指标。完整解释与计算细节见 [RESULTS.md](RESULTS.md)。
 
 ## 技术栈
 
-Python 3 运行程序；pandas 读取及汇总 CSV；Python 标准库做数学与统计计算并生成 SVG。CSV 可用表格软件打开，SVG 放大时仍清晰。**这是统计分析项目，没有训练机器学习预测模型。**
+`Python` · `pandas` · Python 标准库 · `CSV` · `SVG`
+
+本项目进行统计分析与可视化，**没有训练购买预测机器学习模型**。
 
 ---
 
-## 解读时的限制
+<div align="center">
 
-- 统计单位是访问会话，不是已确认的独立用户。
-- 访客类型不是随机分配的，关联不能证明因果。
-- 无法断定完全相同记录一定是错误数据。
-- ProductRelated 是访问期间形成的行为，分组与标准化只是描述性比较，不是因果控制。
-- 结论针对本数据集，不能直接推广到所有网站或时期。
+INT6165 · Foundations of Data Science and AI · Group Project
 
-建议先看本文件的结论，再按 [RESULTS.md](RESULTS.md) 的顺序理解计算和解释。
-
----
-
-*INT6165 · Online Shoppers Purchase Rate Analysis*
+</div>

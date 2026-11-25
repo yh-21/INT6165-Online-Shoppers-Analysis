@@ -98,7 +98,7 @@ def chart(name, title, items, x_max=40, zero=False):
     """Simple SVG dot and interval plot; values are in percentage points."""
     left,right=230,780
     h=130+len(items)*65
-    parts=[f'<svg xmlns="http://www.w3.org/2000/svg" width="900" height="{h}" viewBox="0 0 900 {h}">',
+    parts=[f'<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="{h}" viewBox="0 0 1120 {h}">',
            '<rect width="100%" height="100%" fill="white"/>',
            f'<text x="35" y="38" font-size="23" font-family="Arial" font-weight="bold">{html.escape(title)}</text>']
     if zero:
@@ -155,12 +155,22 @@ def stage2_main():
     chosen['product_group']=pd.cut(chosen.ProductRelated,bins=edges,labels=labels)
     tab=chosen.groupby(['product_group','VisitorType'],observed=True)['Revenue'].agg(sessions='size',purchases='sum').reset_index()
     tab['rate']=tab.purchases/tab.sessions
+    tab['nonpurchases'] = tab.sessions - tab.purchases
+    tab['sparse_check'] = (tab.sessions < 30) | (tab.purchases < 5) | (tab.nonpurchases < 5)
+    cell_intervals = [wilson(int(r.purchases), int(r.sessions)) for r in tab.itertuples()]
+    tab['ci95_low'] = [lo for lo, _ in cell_intervals]
+    tab['ci95_high'] = [hi for _, hi in cell_intervals]
     tab.to_csv(TABLES/'stage2_productrelated_groups.csv',index=False,encoding='utf-8-sig')
-    chart('stage2_productrelated.svg','不同产品相关页面浏览量下的购买率',[
-        (f'{label}页 / {"新访客" if group == GROUPS[0] else "回访者"}',float(tab[(tab.product_group==label)&(tab.VisitorType==group)].rate.iloc[0])*100,
-         float(tab[(tab.product_group==label)&(tab.VisitorType==group)].rate.iloc[0])*100,
-         float(tab[(tab.product_group==label)&(tab.VisitorType==group)].rate.iloc[0])*100,'')
-        for label in labels for group in GROUPS],x_max=40)
+    group_items = []
+    for label in labels:
+        for group in GROUPS:
+            row = tab[(tab.product_group == label) & (tab.VisitorType == group)].iloc[0]
+            visitor_name = '新访客' if group == GROUPS[0] else '回访者'
+            group_items.append((f'{label}页 / {visitor_name}', float(row.rate*100),
+                float(row.ci95_low*100), float(row.ci95_high*100),
+                f'购买/访问={int(row.purchases)}/{int(row.sessions)}'))
+    chart('stage2_productrelated.svg','不同产品相关页面浏览量下的购买率（Wilson 95%区间）',
+          group_items,x_max=45)
     wide=tab.pivot(index='product_group',columns='VisitorType',values=['sessions','purchases','rate']).reindex(labels)
     weights=chosen.product_group.value_counts().reindex(labels)/len(chosen)
     standardized={g:float((wide['rate'][g]*weights).sum()) for g in GROUPS}
